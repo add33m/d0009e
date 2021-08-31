@@ -29,8 +29,6 @@ Skriv, i samma fil, ett script (huvudprogram) som skriver ut sockerkaksrecept ti
 
 '''
 
-import math
-
 def recept(antal):
   print(round(3 / 4 * antal), "st ägg")
   print(round(3 / 4 * antal, 2), "dl strösocker")
@@ -43,18 +41,19 @@ def recept(antal):
 def tidblanda(antal):
   return 10 + (antal > 0 and antal) or 0
 
-def tidgrädda(antal):
+def tidgradda(antal):
   return 3 * tidblanda(antal)
 
-def heltrecept(antal):
+def sockerkaka(antal):
   recept(antal)
 
   print()
   print("Förberedningstid:", tidblanda(antal))
-  print("Gräddtid:", tidgrädda(antal))
+  print("Gräddtid:", tidgradda(antal))
+  print("Total tid:", tidblanda(antal) + tidblanda(antal))
 
 # Printa ut recept för 4 och 7 pers
 
-heltrecept(4)
+sockerkaka(4)
 print()
-heltrecept(7)
+sockerkaka(7)
