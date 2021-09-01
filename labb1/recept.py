@@ -50,7 +50,7 @@ def sockerkaka(antal):
   print()
   print("Förberedningstid:", tidblanda(antal))
   print("Gräddtid:", tidgradda(antal))
-  print("Total tid:", tidblanda(antal) + tidblanda(antal))
+  print("Total tid:", tidblanda(antal) + tidgradda(antal))
 
 # Printa ut recept för 4 och 7 pers
 
