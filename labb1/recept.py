@@ -35,7 +35,7 @@ def recept(antal):
   print(round(2 / 4 * antal, 2), "tsk vaniljsocker")
   print(round(2 / 4 * antal, 2), "tsk bakpulver")
   print(round(3 / 4 * antal, 2), "dl vetemjöl")
-  print(round(75 / 4 * antal / 25) * 25, "g smör")
+  print(round(75 / 4 * antal, 2), "g smör")
   print(round(1 / 4 * antal, 2), "dl vatten")
 
 def tidblanda(antal):
