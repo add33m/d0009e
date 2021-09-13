@@ -35,7 +35,7 @@ class Phonebook:
 
       # Om inga argument finns
       else:
-        print("Invalid use or command")
+        print("Missing argument(s)")
 
 
   def add(self, args):
@@ -48,9 +48,9 @@ class Phonebook:
         self.book[args[0]] = num
         return f"Added entry for {args[0]}: {args[1]}"
       except: 
-        return ":("
+        return f"{args[1]} is not a valid number"
     else:
-      return ":("
+      return args[0] and args[1] and f"Entry already exists for {args[0]}" or "Invalid or missing argument(s)"
 
   # Funktion som rekursivt kan söka genom aliases och returna svaret istället för en string
   def performLookup(self, search):
@@ -68,6 +68,25 @@ class Phonebook:
     else:
       return None
 
+  # Funktion som använder performLookup för att svara med en sträng som kan printas
+  def lookup(self, args):
+    if args[0]:
+      result = self.performLookup(args[0])
+      if result:
+        return f"Entry found for {args[0]}: {result}"
+      else:
+        return f"No entry found for {args[0]}"
+    else:
+      return "Invalid or missing argument"
+
+  # Skapa en entry där värdet är en string, så vet performLookup att den ska göra en rekursiv sökning
+  def alias(self, args):
+    if args[0] and args[1] and self.performLookup(args[0]):
+      self.book[args[1]] = args[0]
+      return f"Added alias for {args[0]}: {args[1]}"
+    else:
+      return args[0] and args[1] and f"No entry exists for {args[0]}" or "Invalid or missing argument(s)"
+  
   # Fungerar på samma sätt som performLookup fast ändrar värdet istället för att returna det
   def performChange(self, search, newVal):
     if search:
@@ -94,25 +113,6 @@ class Phonebook:
     else:
       return None
 
-  # Funktion som använder performLookup för att svara med en sträng som kan printas
-  def lookup(self, args):
-    if args[0]:
-      result = self.performLookup(args[0])
-      if result:
-        return f"Entry found for {args[0]}: {result}"
-      else:
-        return "No result..."
-    else:
-      return ":("
-
-  # Skapa en entry där värdet är en string, så vet performLookup att den ska göra en rekursiv sökning
-  def alias(self, args):
-    if args[0] and args[1] and self.performLookup(args[0]):
-      self.book[args[1]] = args[0]
-      return f"Added alias for {args[0]}: {args[1]}"
-    else:
-      return ":("
-
   # Om det finns ett nummer för namnet, ändra det till det nya
   def change(self, args):
     # Dubbelkolla att argumenten och värdet finns
@@ -122,10 +122,10 @@ class Phonebook:
       if self.performChange(args[0], args[1]):
         return f"Changed number for {args[0]}: {args[1]}"
       else:
-        return ":("
+        return f"Failed to change number for {args[0]}"
 
     else:
-      return ":("
+      return args[0] and args[1] and f"No entry exists for {args[0]}" or "Invalid or missing argument(s)"
 
   # Spara den nuvarande tabellen/telefonboken till fil
   def save(self, args):
@@ -140,33 +140,44 @@ class Phonebook:
         result += f"{key};{val};\n" # Lägg till en ny rad med format: key;value;
 
       # Spara till filen
-      with open(args[0], "w") as file:
-        file.write(result)
-        return f"Successfully saved data to {args[0]}"
+      try:
+        with open(args[0], "w") as file:
+          file.write(result)
+          return f"Successfully saved data to {args[0]}"
+      except:
+        return f"Failed to save data to {args[0]}"
     
     # Något gick fel
-    return ":("
+    return "Invalid or missing argument"
 
   # Ladda en tabell/telefonbok från fil
   def load(self, args):
     # Kolla så att arg0 (filnamn) finns
     if args[0]:
       # Ladda filen
-      with open(args[0], "r") as file:
-        saveData = file.read()
-        if saveData:
-          # Gå igenom och splitta upp strängen efter först \n, sedan ;
-          self.book = {} # Skapa en ny tabell
-          for line in saveData.split("\n"):
-            lineData = line.split(";")
-            # Skriv sedan in det i den nya tabellen
-            if lineData[0] and lineData[1]:
-              self.book[lineData[0]] = int(lineData[1])
-          
-          return f"Successfully loaded data from {args[0]}, {saveData.split('\n')} entries found"
-    
+      try:
+        with open(args[0], "r") as file:
+          saveData = file.read()
+          if saveData:
+            # Gå igenom och splitta upp strängen efter först \n, sedan ;
+            self.book = {} # Skapa en ny tabell
+            lines = saveData.split("\n")
+            for line in lines:
+              lineData = line.split(";")
+              # Skriv sedan in det i den nya tabellen
+              if lineData[0] and lineData[1]:
+                self.book[lineData[0]] = int(lineData[1])
+            
+            return f"Successfully loaded data from {args[0]}, {lines} entries found"
+      
+          # saveData finns inte eller är tom
+          else:
+            return "Missing save data"
+      except:
+        return f"Failed to load file {args[0]}"
+
     # Något gick fel
-    return ":("
+    return "Invalid or missing argument"
 
 
 Phonebook().main()
