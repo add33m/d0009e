@@ -239,7 +239,11 @@ class Phonebook:
             # Lägg till aliases om de finns
             if len(lineData) > 2:
               for alias in lineData[2:]:
-                newPerson.addAlias(alias)
+                if alias in names:
+                  raise ValueError(f"Aliases must be unique")
+                else:
+                  names.append(alias)
+                  newPerson.addAlias(alias)
 
             newData.append(newPerson)
 
